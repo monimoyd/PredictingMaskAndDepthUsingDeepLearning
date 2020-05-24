@@ -93,7 +93,7 @@ I have used UNet Model for this. UNet Model is suitable for segmentation works.
 
 Original Unet architecture is as below [Source: https://towardsdatascience.com/u-net-b229b32b4a71]
 
-![Project Report](/doc_image/unet_architecture.png)
+![Project Report](/doc_images/unet_architecture.png)
 
 The architecture looks like a ‘U’ which justifies its name. This architecture consists of three sections: The contraction, 
 The bottleneck, and the expansion section. The contraction section is made of many contraction blocks. Each block takes an input 
