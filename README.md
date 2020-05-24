@@ -19,6 +19,10 @@ The complete dataset is available in google drive link:
 
 https://drive.google.com/drive/folders/1YF4HvfTdDwDLYPmBokx4b5QzInMVyAzA?usp=sharing
 
+Jupyter Notebook if you face any access issues, please use the link:
+
+https://colab.research.google.com/drive/1xylqpDJOHght0IcGGblgmMTSK4OKtLoN?usp=sharing
+
 
 # II. Training
 
@@ -281,7 +285,7 @@ Result from Training
 Mask IoU vlaue: 0.9422367689214051
 
 
-### Predicted Mask Image:
+### Predicted Depth Image:
 
 ![test_predicted_depth_1](/results/train_depth_1.jpg)
 
