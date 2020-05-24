@@ -463,8 +463,9 @@ MACS:  892294400.0
 
 # VII. Problems Faced and how I addressed
 
-## i. Colab accessMy Colab account for GPU access was suspended giving reason that my usage limit is high. So changed to Colab Problem
-by pahying monthly subscription
+## i. Colab access:
+My Colab account for GPU access was suspended giving reason that my usage limit is high. So changed to Colab Pro
+by paying monthly subscription
 
 ii. The Colab page got hung lot of times (after say internet got disconneted for sometime). I realized that this is because I was
 displaying too many imges after few iterations. So I reduced 
