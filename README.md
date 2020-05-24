@@ -220,13 +220,6 @@ A few results from Test are as below:
 
 ![test_fg_bg_1](/results/test_predicted_mask_1.jpg)
 
-### Ground Truth Mask Image:
-
-![test_fg_bg_1](/results/test_ground_truth_mask_1.jpg)
-
-### Predicted Mask Image:
-
-![test_fg_bg_1](/results/test_predicted_mask_1.jpg)
 
 Predicted Mask IoU value :  0.9565858394563042
 
@@ -257,13 +250,6 @@ Predicted Mask IoU value :  0.9565858394563042
 
 ![test_fg_bg_2](/results/test_predicted_mask_2.jpg)
 
-### Ground Truth Mask Image:
-
-![test_fg_bg_2](/results/test_ground_truth_mask_2.jpg)
-
-### Predicted Mask Image:
-
-![test_fg_bg_2](/results/test_predicted_mask_2.jpg)
 
 Predicted Mask IoU value :  0.9565858394563042
 
