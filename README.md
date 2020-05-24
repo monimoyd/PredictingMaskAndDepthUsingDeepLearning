@@ -89,7 +89,25 @@ Same Data augmentations are applied on input bg, fg_bg, mask, depth images
 
 ## iii. Model
 
-I have used UNet Model for this. UNet Model is suitable for segmentation work.
+I have used UNet Model for this. UNet Model is suitable for segmentation works.
+
+Original Unet architecture is as below [Source: https://towardsdatascience.com/u-net-b229b32b4a71]
+
+![Project Report](/doc_image/unet_architecture.png)
+
+The architecture looks like a ‘U’ which justifies its name. This architecture consists of three sections: The contraction, 
+The bottleneck, and the expansion section. The contraction section is made of many contraction blocks. Each block takes an input 
+applies two 3X3 convolution layers followed by a 2X2 max pooling. The number of kernels or feature maps after each block doubles
+ so that architecture can learn the complex structures effectively. The bottommost layer mediates between the contraction layer 
+ and the expansion layer. It uses two 3X3 CNN layers followed by 2X2 up convolution layer.
+But the heart of this architecture lies in the expansion section. Similar to contraction layer, it also consists of several 
+expansion blocks. Each block passes the input to two 3X3 CNN layers followed by a 2X2 upsampling layer. Also after each block 
+number of feature maps used by convolutional layer get half to maintain symmetry. However, every time the input is also get appended 
+by feature maps of the corresponding contraction layer. This action would ensure that the features that are learned while contracting
+ the image will be used to reconstruct it. The number of expansion blocks is as same as the number of contraction block. After that,
+ the resultant mapping passes through another 3X3 CNN layer with the number of feature maps equal to the number of segments desired.
+
+
 
 Original UNet Model has around 25 Million parameters, so reduced parameters:
 
@@ -151,6 +169,33 @@ Used SGD Optimizer with momentum. Learning Rates are reduced using StepLR with s
 
 
 # III. Testing
+
+The following diagram shows the main components of training
+
+![Project Report](/doc_images/testing_components.png)
+
+
+Here inputs are
+- 160x160 background images
+- 160x160 foreground images superimposed on background
+
+
+Processing are done by:
+
+- Data loader loads the data. Dataloader uses the images from batch10 i.e. batch10_images.jpg
+- Model is used to foreward pass through the neural network and predicts mask  
+
+
+Outputs are:
+
+- 160x160 mask of foreground on black background
+- 80x80 predicted depth image
+
+
+For testing, best model from training is loaded and then evaluation is done on the input images
+
+
+
 
 
 # IV. Results
@@ -332,6 +377,18 @@ The following are some of the screenshots of cProfile:
 ![cprofile_plot_2](/cprofile_plots/cprofile_plot_2.png)
 
 
+## Analysis:
+
+The train_test_utils.py line numbers 21, 24 and 29 consume lot of time. Line no 21 is related to train method, line number 24 and 29
+is related to GPU profiling hooks used, which can be removed 
+
+Another component which is consuming time is unet_model_small.py forwward function in line 115 also consumes times
+
+
+Lot of python libraries like tornado/stack_context.py zmq/eventloop/zmq_stream.py also consumes lot of time
+
+
+
 
 
 ## iii. GPU Profiling
@@ -348,23 +405,14 @@ I have instrumented the training code for GPU profiling based on article:
 | layer_idx | call_idx |  layer_type              |  exp   | hook_type |    mem_all   |  mem_cached     |
 | ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    0      |    0     |    UNet                  | exp_0  |   pre     |   35588096   |   341835776     |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    1      |    1     |  DoubleConv              | exp_0  |   pre     |   56559616   |   341835776     |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    2      |    2     |   Sequential             | exp_0  |   pre     |   56559616   |   341835776     |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    3      |    3     | depthwise_separable_conv | exp_0  |   pre     |   35588096   |   341835776     |
-| ----------|----------|--------------------------| -------|-----------|--------------|---------------- |
 |    4      |    4     |    Conv2d                | exp_0  |   pre     |   56559616   |   341835776     |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    4      |    5     |    Conv2d                | exp_0  |   fwd     |   77531136   |   341835776     |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    5      |    6     |    conv2d                | exp_0  |   pre     |   77531136   |   341835776     |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    5      |    7     |    Conv2d                | exp_0  |   pre     |   405211136  |   1000341504    |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    3      |    8     | depthwise_separable_conv | exp_0  |   fwd     |   405211136  |   1000341504    |
-| ----------|----------|--------------------------|--------| ----------|--------------|---------------- |
 |    6      |    9     |    BatchNorm2d           | exp_0  |   pre     |   405211136  |   1000341504    |
 
 Last few records depthwise_separable_conv, BatchNorm2d are using mem_cached value of  1000341504 which is too high, needs
@@ -413,16 +461,16 @@ MACS:  892294400.0
 
 |  Path                                                     |        Comment                                                          |
 | ----------------------------------------------------------|-------------------------------------------------------------------------|
-|  assignment15_final_api.ipynb                             |                                                                         |    
-|  data_loaders/fg_bg_images_data_loader.py                 |                                                                         |
-|  data_transformations/fg_bg_images_data_transformation.py |                                                                         | 
-|  utils/iou_util.py                                        |                                                                         |
-|  utils/ssim_util.py                                       |                                                                         |
-|  utils/plot_util.py                                       |                                                                         |      
-|  utils/train_test_util.py                                 |                                                                         |           |
-|  results                                                  |                                                                         |
-|  cprofile_plots                                           |                                                                         |
-|  tensorboard_plots                                        |                                                                         |
+|  assignment15_final_api.ipynb                             |  Main Jupyter Notebook for training and testing the model               |
+|  data_loaders/fg_bg_images_data_loader.py                 |  Image Data Loader                                                      |
+|  data_transformations/fg_bg_images_data_transformation.py |  Transformation and Augmentation                                        | 
+|  utils/iou_util.py                                        |  Utility for calculating IoU                                            |
+|  utils/ssim_util.py                                       |  Utility for SSIM Loss calculation                                      |
+|  utils/plot_util.py                                       |  Utility for plotting images                                            |      
+|  utils/train_test_util.py                                 |  Utility for training testing and GPU profiling                         |
+|  results                                                  |  Image Results are stored                                               |
+|  cprofile_plots                                           |  Cprofile plots are stored                                              |
+|  tensorboard_plots                                        |  Tesnsorborad plots are sto                                             |
 
  
                                                  
