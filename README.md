@@ -36,7 +36,7 @@ Major Highlights:
 -  Use fully API based implementation 
 -  Used UNet architecture with only 148K parameters 
 -  Used Image augmentation i. Gaussian Noise ii. ColorJitter
--  IoU value for predicyed mask is close to 0.95, while depth images are very closer to ground truth 
+-  IoU value for predicted mask is close to 0.95, while depth images are very closer to ground truth 
 - Used various profiling tools tensorboard, cprofile, GPU profiler 
 - Measured time during training, copying, unzipping images
 - Only 5 epochs are used to achive the result
@@ -239,9 +239,13 @@ The code for calculating IoU is:
 The following Hyperparameters are used:
 
 Batch Size : 100
+
 Number of Epochs : 5
+
 Initial Learning Rate: 0.01
+
 Momentum : 0.9
+
 Weight Decay: 1e-5
 
 
