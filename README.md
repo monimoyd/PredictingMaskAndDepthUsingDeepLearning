@@ -459,8 +459,6 @@ The following are some of the screenshots of cProfile:
 
 
 
-
-
 ## Analysis:
 
 The train_test_utils.py line numbers 21, 24 and 29 consume lot of time. Line no 21 is related to train method, line number 24 and 29
@@ -502,7 +500,7 @@ I have instrumented the training code for GPU profiling based on article:
 |    6      |    9     |    BatchNorm2d           | exp_0  |   pre     |   405211136  |   1000341504    |
 
 Last few records depthwise_separable_conv, BatchNorm2d are using mem_cached value of  1000341504 which is too high, needs
-attentions
+further attention.
 
 The code for GPU profiling is available in URL:
 
@@ -555,15 +553,25 @@ iii. Misc time
 ![doc_images](/doc_images/epoch_vs_misc_time.png)
 
 
-## Analysis: From this data training time gradually increases upto around 60 seconds then sligtly decreases. Data Loading time and
-Misc Time are almost constant across epochs
+## Analysis: 
 
-vi. MACs value for Model:
+From this data training time gradually increases upto around 60 seconds then sligtly decreases. Data Loading time and
+Misc Time are almost constant across epochs.
 
-multiply-and-accumulate (MAC) operations gives how  better model will perform in terms of number of operations. Used thop library
-to calculated MACs value as below:
+Data loading time can be further reduced by changing num_workers attribute in Dataloader. 
 
-MACS:  892294400.0
+## vi. MACs value for Model:
+
+multiply-and-accumulate (MAC) operations gives how  better model will perform in terms of number of operations. Installed thop library
+and used profile method to calculated MACs value as below:
+
+MACs:  892294400.0
+
+Code for calculating MACs value is in  the Jupyter Notebook:
+
+https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/assignment15_final_api.ipynb
+
+(Please look for cell under the title "Calculate and display MACS value of the model")
 
 
 # VI. Code Structure
