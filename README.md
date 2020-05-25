@@ -434,7 +434,7 @@ https://drive.google.com/file/d/1Eye2F9UmXo_uLTueZjGGNbFiVhbxgyB8/view?usp=shari
 
 ## ii. cProfile:
 
-cProfiler is used  for profiling Python programs. 
+cProfile is used  for profiling Python programs. 
 
 I have enabled cProfile by using the following lines at the beginning of Jupyter Notebook
 
@@ -458,16 +458,25 @@ The following are some of the screenshots of cProfile:
 
 ![cprofile_plot_2](/cprofile_plots/cprofile_plot_2.png)
 
+The full raw stats generated from cprofile is available in URL:
+
+
+https://drive.google.com/file/d/12SyJc8aK_wlmXU2fI-_JG2cSOaW_dgdD/view?usp=sharing
 
 
 ## Analysis:
 
-The train_test_utils.py line numbers 21, 24 and 29 consume lot of time. Line no 21 is related to train method, line number 24 and 29
+The train_test_utils.py line numbers 77, 21, 24 and 29 consume lot of time. Line no 77 is related to train method, line number 24 and 29
 is related to GPU profiling hooks used, which can be removed 
 
 Another component which is consuming time is unet_model_small.py forward function in line 115 also consumes lot of time
 
 Python libraries like tornado/stack_context.py zmq/eventloop/zmq_stream.py also consumes lot of time
+
+Another time consuming method is tqdm/notebook.py tqdm/std.py, we can explore any ligter version available
+
+torch/util/data/data_loader.py and torch/util/data/_utils/fetch.py also consumes time, which can be improved by 
+increasing num_workers attribute.
 
 cProfile stats file is available in URL:
 
@@ -607,7 +616,7 @@ Initially I was trying to unzip the images zip file in google drive itself. Each
 reduces the time. However, the downside is that 
 
 
-## iii. Colab access:
+## iii. Colab GPU access disabled:
 My Colab account for GPU access was suspended giving reason that my usage limit is high. So changed to Colab Pro
 by paying monthly subscription
 
@@ -624,16 +633,22 @@ without any memory issue
 
 
 
-
 # VIII. Future works
 
-i. The ground truth depth images were not very high quality. My model would have given better results if ground truths are good quality.
+## i. 
+The ground truth depth images were not very high quality. My model would have given better results if ground truths are good quality.
 So, as a future I will try good models to generate ground truth depth images
 
-ii. Further analysis of GPU memory profiling can be done
+## ii. 
+Further analysis of GPU memory profiling can be done
 
-ii. I have to run around 7.5 hours to achieve the result. As Google TPU are faster, I would like to try with TPU
+### iii.
 
+ I have to run around 7.5 hours to achieve the result. As Google TPU are faster, I would like to try with TPU
+ 
+### iv.
+
+Apply knowledge acquired different applications like lung cancer detetion etc.
 
 
 
