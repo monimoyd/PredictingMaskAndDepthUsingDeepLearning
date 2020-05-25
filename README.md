@@ -290,9 +290,10 @@ The code for Testing is available in URL:
 All the results are available in Jupyter Notebook 
 https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/assignment15_final_api.ipynb
 
-(Training results are  in training cell output , and testing results are in testing cell output
+(Training results are in training cell output titled "Perform training of the model and periodically display statistics, mask , depth images generated, IoU value"
+, and testing results are in testing cell output titled "Load the best model and perform test and Test dataset and show results")
 
-## Results from traing:
+## Results from Testing:
 
 
 ## i. 
