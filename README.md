@@ -53,8 +53,6 @@ Alternatively , if you directly want to use the Jupyter Notebook, please take AP
 https://drive.google.com/drive/folders/1YTvb7V0eDfn5MZwBbc4msFkWKH5ArotI?usp=sharing 
 
 
-
-
 # II. Training
 
 The following diagram shows the main components of training
@@ -92,7 +90,6 @@ The code for Traing is available in URL:
 ## i. Data Loader
 
 Datal Loader performs loading of data from the images.
-
 
 
 The workflow for dataloader is explained in the flowchart below:
@@ -167,7 +164,6 @@ by feature maps of the corresponding contraction layer. This action would ensure
  the resultant mapping passes through another 3X3 CNN layer with the number of feature maps equal to the number of segments desired.
 
 
-
 Original UNet Model has around 25 Million parameters, so to reduce parameters:
 
 - Used Depthwise Separable Convolution
@@ -181,6 +177,17 @@ depth (80x80)
 The code for Model is available in URL:
 
 https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/models/unet_model_small.py
+
+
+Model weights are saved after every 100 batches are processed so that I can recover in case any crash happens.
+It also helps to select best model based on results
+ All the model weights are available in URL:
+ 
+ 
+https://drive.google.com/drive/folders/1--BfoDLcQeCW3dvh2_52zMf4no6pg-YJ?usp=sharing
+
+
+
 
 
 ## iv. Loss Function
@@ -419,6 +426,11 @@ From the training IoU it is evident that IoU values increases initially to aroun
 For the testing, IoU value remains steady between small range of 0.948 and 0.95
 
 
+Tensor board captureed profiles files is available in URL:
+
+https://drive.google.com/file/d/1Eye2F9UmXo_uLTueZjGGNbFiVhbxgyB8/view?usp=sharing
+
+
 ## ii. cProfile:
 
 cProfiler is used  for profiling Python programs. 
@@ -458,6 +470,12 @@ Another component which is consuming time is unet_model_small.py forward functio
 
 Python libraries like tornado/stack_context.py zmq/eventloop/zmq_stream.py also consumes lot of time
 
+cProfile stats file is available in URL:
+
+https://drive.google.com/file/d/12SyJc8aK_wlmXU2fI-_JG2cSOaW_dgdD/view?usp=sharing
+
+
+
 
 ## iii. GPU Profiling
 
@@ -491,6 +509,10 @@ The code for GPU profiling is available in URL:
 https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/utils/train_test_util.py
 
 (please look for methods _get_gpu_mem, _generate_mem_hook, _add_memory_hooks, log_mem)
+
+Full GPU Profiling gpu_profiler_stats.csv file is available in:
+
+https://drive.google.com/file/d/1Es4bPPQIa2937jxwIOWNi4ztVIf9zVtM/view?usp=sharing
 
  
 
@@ -587,7 +609,8 @@ I faced issues, so I used the chrome extension as mentioned in telegram group po
 As I am also saving model periodically to google drive. In case I can not view Jupyter Notebook, I keep on viewing new model weights 
 files are generated to know that Colab is still working on Jupyter notebook
 
-## vi. Initially I was trying bigger batch size (256,124) but I was getting out of memory. Finally I found that batch size of 100 works
+## vi. Batch size selection
+Initially I was trying bigger batch size (256,124) but I was getting out of memory. Finally I found that batch size of 100 works
 without any memory issue
 
 
@@ -608,9 +631,13 @@ ii. I have to run around 7.5 hours to achieve the result. As Google TPU are fast
 # IX. Conclusion
 
 
-In this project, I have worked on predicting Mask and Depth of given background and foregroud superimposed background images. I have used reduced UNet model of only 748K parameters (i.e. less than 1M parameters) and predicted mask and depth almost closer to the ground truth values. Mask IoU is around 0.95.
+In this project, I have worked on predicting Mask and Depth of given background and foregroud superimposed background images. 
+I have used reduced UNet model of only 748K parameters (i.e. less than 1M parameters) and predicted mask and depth almost
+ closer to the ground truth values. Mask IoU is around 0.95.
 
-I have used various profiling tools: tensorboard, cprofile, GPU profiler as well as calculated MACS value for the model
+I have used various profiling tools: tensorboard, cprofile, GPU profiler as well as calculated MACS value for the model.
+
+This project is a great learning opportunity for me.
 
 
 
