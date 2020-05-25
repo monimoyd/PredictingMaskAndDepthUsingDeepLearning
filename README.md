@@ -3,25 +3,57 @@ Predicting Mask and Depth of image from background and foreground superimposed o
 
 # I. Problem Statement
 
-In this project backgorund image and foreground image is given, task is predict
+In this project background image and foreground image superimposed on background image are given, task is predict
 
 1. Mask Corresponding to the foreground
-2. Esumation of depth of image
+2. Depth map of image
 
-The dataset is given in 10 zip files (batch1_images.zip, batch2_images.zip ..., batch10_images.zip). Each zip contains the following folders:
+The dataset is given in 10 zip files (batch1_images.zip, batch2_images.zip ..., batch10_images.zip). Each zip contains the following
+ folders:
 
 bg_jpg : Background jpg images
+
 fg_bg_jpg : Foreground image superimposed on background image
+
 mask_black_jpg : Ground truth of Mask of foregorund image on black background
+
 depth_fg_bg_jpg: Ground truth of depth image
 
 The complete dataset is available in google drive link:
 
 https://drive.google.com/drive/folders/1YF4HvfTdDwDLYPmBokx4b5QzInMVyAzA?usp=sharing
 
-Jupyter Notebook if you face any access issues, please use the link:
+Jupyter Notebook link:
+https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/assignment15_final_api.ipynb
+
+
+If you face any issues in opening Jupyer Notebook, please use the link:
 
 https://colab.research.google.com/drive/1xylqpDJOHght0IcGGblgmMTSK4OKtLoN?usp=sharing
+
+Major Highlights:
+
+Major highlights: 
+-  Use fully API based implementation 
+-  Used UNet architecture with only 148K parameters 
+-  Used Image augmentation i. Gaussian Noise ii. ColorJitter
+-  IoU value for predicyed mask is close to 0.95, while depth images are very closer to ground truth 
+- Used various profiling tools tensorboard, cprofile, GPU profiler 
+- Measured time during training, copying, unzipping images
+- Only 5 epochs are used to achive the result
+
+## Running the code
+
+For running the code, you can take the Jupyter Notebook assignment15_final_api.ipynb links which I provided above,
+make sure you clone the repository inside the notebook to get the API codes
+
+git clone https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning.git 
+
+Alternatively , if you directly want to use the Jupyter Notebook, please take API from the google drive link:
+
+https://drive.google.com/drive/folders/1YTvb7V0eDfn5MZwBbc4msFkWKH5ArotI?usp=sharing 
+
+
 
 
 # II. Training
@@ -40,9 +72,9 @@ Here inputs are
 Processing are done by:
 
 - Data loader loads the data, while image augmentation performs augmentation of image. 
-- Model is used to foreward pass through the neural network and predicts mask and . 
-- Loss Function calculates loss value between ground truth of  predicted mask and ground truth mask as well 
-as predicted depth and ground truth depth and the loss value is backpropagated through the neural network
+- Model is used to foreward pass through the neural network and predicts mask 
+- Loss Function calculates loss value between predicted mask image and ground truth mask image as well 
+as predicted depth image and ground truth depth image. The loss value is backpropagated through the neural network
 and weights of model are updated
 
 
@@ -54,12 +86,18 @@ Outputs are:
 
 ## i. Data Loader
 
-Datal Loader performs loading oda data from the images.
+Datal Loader performs loading of data from the images.
+
+
+
+The workflow for dataloader is explained in teh flowchart below:
+
+![Project Report](/doc_images/data_loader_workflow.png)
 
 The process involved:
 , 
 - Copy all the zip files from the google drive to the Google colab local folder /content/data
-- Unzip each of zip in a respective batch folder. For exampe batch1_images.zip is unzipped to /content/data/batch1 folder.
+- Unzip each of zip in a respective batch folder. For example batch1_images.zip is unzipped to /content/data/batch1 folder.
 
 Similar process is done for other batches as well
 - There are two datasets:
@@ -70,23 +108,27 @@ respetive batch folder (batch1, batch2 4, .. batch9)  and used for training.
 Records are populated as below
  - Multi level index (batch id, offset) of all the files in fg_bg_jpg folder
   - The  __getitem__ method takes index as an argument.
- - index is used to calculate batch_id by dividing batch_id by 40000. Remainder is used to calculate offset
- - Once the fg_bg image file is identied the corresponding background image file is identified based on naming convention.
+ - index is used to calculate batch_id by dividing index by 40000. Remainder is used to calculate offset
+ - Once the fg_bg image file is identified the corresponding background image file is identified based on naming convention.
  For exmaple of fg_bg image file name is fg_bg_1_100_1_15.jpg then by convention second number after fg_bg will be background
  image, in this case it will be bg_100.jpg and it will be avaialble in bg_jpg folder under respective batch id directory
  
- Based on convention the mask image filename will have same suffix so,  fg_bg_1_100_1_15.jpg file correspoding mask image will be 
- bg_mask_1_100_1_15.jpg will be available in mask_black_jpg folder under the batch id directory
+ Based on convention the ground truth mask image, filename will have same suffix as the fg_bg image file name. For example if fg_bg image
+ filename is fg_bg_1_100_1_15.jpg, file name correspoding to ground truth mask image will be 
+ bg_mask_1_100_1_15.jpg, which will be available in mask_black_jpg folder under the batch id directory
  
- Similary, depth image filename will have the same suffix so fg_bg_1_100_1_15.jpg fg_bg_1_100_1_15.jpg file correspoding mask image will be 
- depth_1_100_1_15.jpg will be available in mask_black_jpg directory under the respective batch directory
+ Similary, ground truth  depth image filename will have the same suffix as the fg_bg image file name. For example, if fg_bg image
+ filename is fg_bg_1_100_1_15.jpg, the  filename correspoding depth image will be 
+ depth_1_100_1_15.jpg, which will be available in depth_fg_bg_jpg directory under the respective batch directory
  
+ 
+  
 
 ## ii. Data Augmentation
 
 For the training images there are two augmentations used:
 
-- ColorJitter from torchvisiong with brightness:0.075, contrast:0.075, saturation:0.075, hue:0.075
+- ColorJitter from torchvision with brightness:0.075, contrast:0.075, saturation:0.075, hue:0.075
 - Custom class GaussianNoise with mean 0, standard deviation: 0.05 with probability: 0.2. 
 
 Same Data augmentations are applied on input bg, fg_bg, mask, depth images
@@ -200,8 +242,6 @@ For testing, best model from training is loaded and then evaluation is done on t
 
 
 
-
-
 # IV. Results
 
 A few results from Test are as below:
@@ -227,11 +267,11 @@ A few results from Test are as below:
 
 Predicted Mask IoU value :  0.9565858394563042
 
-### Ground Truth Depth Image:
+### Ground Truth Depth Image (with plasma display):
 
 ![test_fg_bg_1](/results/test_ground_truth_depth_1.jpg)
 
-### Predicted Mask Image:
+### Predicted Mask Image (with plasma display):
 
 ![test_predicted_depth_1](/results/test_predicted_depth_1.jpg)
 
@@ -255,18 +295,18 @@ Predicted Mask IoU value :  0.9565858394563042
 ![test_fg_bg_2](/results/test_predicted_mask_2.jpg)
 
 
-Predicted Mask IoU value :  0.9565858394563042
+Predicted Mask IoU value :  0.9478972876254577
 
-### Ground Truth Depth Image:
+### Ground Truth Depth Image (with plasma display):
 
 ![test_fg_bg_2](/results/test_ground_truth_depth_2.jpg)
 
-### Predicted Mask Image:
+### Predicted Depth Image (with plasma display):
 
 ![test_predicted_depth_2](/results/test_predicted_depth_2.jpg)
 
 
-Result from Training
+## Result from Training
 
 ## i. 
 
@@ -285,7 +325,7 @@ Result from Training
 Mask IoU vlaue: 0.9422367689214051
 
 
-### Predicted Depth Image:
+### Predicted Depth Image (with plasma display):
 
 ![test_predicted_depth_1](/results/train_depth_1.jpg)
 
@@ -296,9 +336,9 @@ Mask IoU vlaue: 0.9422367689214051
 
 
 
-## i. Tensor Board
+## i. Tensorboard
 
-TensorBoard is a profiler and visualization tool  and used for following:
+TensorBoard is a profiler and visualization tool, it is  used for the following purposes:
 - Tracking and visualizing metrics such as loss and accuracy
 - Visualizing the model graph (ops and layers)
 - Viewing histograms of weights, biases, or other tensors as they change over time
@@ -339,10 +379,9 @@ From the training IoU it is evident that IoU values increases initially to aroun
 For the testing, IoU value remains steady between small range of 0.948 and 0.95
 
 
-
 ## ii. cProfile:
 
-cProfiler is another  for profiling Python programs. 
+cProfiler is used  for profiling Python programs. 
 
 I have enabled cProfile by using the following lines at the beginning of Jupyter Notebook
 
@@ -372,13 +411,9 @@ The following are some of the screenshots of cProfile:
 The train_test_utils.py line numbers 21, 24 and 29 consume lot of time. Line no 21 is related to train method, line number 24 and 29
 is related to GPU profiling hooks used, which can be removed 
 
-Another component which is consuming time is unet_model_small.py forwward function in line 115 also consumes times
+Another component which is consuming time is unet_model_small.py forward function in line 115 also consumes lot of time
 
-
-Lot of python libraries like tornado/stack_context.py zmq/eventloop/zmq_stream.py also consumes lot of time
-
-
-
+Python libraries like tornado/stack_context.py zmq/eventloop/zmq_stream.py also consumes lot of time
 
 
 ## iii. GPU Profiling
@@ -414,8 +449,9 @@ attentions
 
 ## iv. Time Measurements
 
-I have measured time copyinng zip files, unzipping the zip file, as well as training times. 
-
+I have measured time copyinng zip files, unzipping the zip file, as well as training times.
+ 
+(All measurements units are seconds)
 
 Total time taken for copying zip files:  128.2801535129547
 
@@ -436,7 +472,21 @@ iii. Misc time
 |     4        |   3661.500823497772   |    10.634032964706421    |    61.81038284301758             |
 |     5        |   3653.637369155884   |    10.622773170471191    |    57.52307391166687             |
 
-## Analysis: From this data training time has a slight variance within 60 seconds across epochs. Data Loading time and
+
+### a. Epoch vs Training time Plot
+
+![doc_images](/doc_images/epoch_vs_training_time.png)
+
+### b. Epoch vs Data Loading time Plot
+
+![doc_images](/doc_images/epoch_vs_dataloading_time.png)
+
+### b. Epoch vs Misc time Plot
+
+![doc_images](/doc_images/epoch_vs_misc_time.png)
+
+
+## Analysis: From this data training time gradually increases upto around 60 seconds then sligtly decreases. Data Loading time and
 Misc Time are almost constant across epochs
 
 vi. MACs value for Model:
@@ -460,27 +510,40 @@ MACS:  892294400.0
 |  utils/train_test_util.py                                 |  Utility for training testing and GPU profiling                         |
 |  results                                                  |  Image Results are stored                                               |
 |  cprofile_plots                                           |  Cprofile plots are stored                                              |
-|  tensorboard_plots                                        |  Tesnsorborad plots are sto                                             |
+|  tensorboard_plots                                        |  Tesnsorboard plots are stored                                             |
 
  
-                                                 
+
 
 # VII. Problems Faced and how I addressed
 
-## i. Colab access:
-My Colab account for GPU access was suspended giving reason that my usage limit is high. So changed to Colab Pro
-by paying monthly subscription
-
-ii. The Colab page got hung lot of times (after say internet got disconneted for sometime). I realized that this is because I was
-displaying too many imges after few iterations. So I reduced 
-
-iii. Initilaly I was using BCELogitsLoss for both mask and depth predictions but depth image quality was not good. When I used
+## i. Loss Functions
+Initilaly I was using BCELogitsLoss for both mask and depth predictions but depth image quality was not good. When I used
 SSIM for depth and BCEWitLogitsLoss for Mask, I found the depth images were better and even mask images IoU is around 0.95 which 
 is quite good
 
-iv. Initially I was trying to unzip the images zip file in google drive itself. Each batch of images were taking close to 
+## ii. Unzip the batch zip image files
+
+Initially I was trying to unzip the images zip file in google drive itself. Each batch of images were taking close to 
 2 hours. So, I changed the strategy and tried copying the image zip files locally to Colab and then unzipped, it significantly
 reduces the time. However, the downside is that 
+
+
+## iii. Colab access:
+My Colab account for GPU access was suspended giving reason that my usage limit is high. So changed to Colab Pro
+by paying monthly subscription
+
+## iv. Jupyter Notebook hung and colab disconnected frequently
+The Jupyter notebook got hung lot of times (after say internet got disconneted for sometime). I realized that this is because I was
+displaying too many imges after few iterations. So I reduced number of times image display per epoch to only two times. Even then
+I faced issues, so I used the chrome extension as mentioned in telegram group post https://github.com/satyajitghana/colab-keepalive .
+As I am also saving model periodically to google drive. In case I can not view Jupyter Notebook, I keep on viewing new model weights 
+files are generated to know that Colab is still working on Jupyter notebook
+
+## vi. Initially I was trying bigger batch size (256,124) but I was getting out of memory. Finally I found that batch size of 100 works
+without any memory issue
+
+
 
 
 # VIII. Future works
@@ -490,7 +553,7 @@ So, as a future I will try good models to generate ground truth depth images
 
 ii. Further analysis of GPU memory profiling can be done
 
-ii. I have to run around 7.5 hours to achieve the result. As Google TPU are faster, I would try to use TPU
+ii. I have to run around 7.5 hours to achieve the result. As Google TPU are faster, I would like to try with TPU
 
 
 
