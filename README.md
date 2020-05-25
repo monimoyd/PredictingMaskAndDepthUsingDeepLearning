@@ -11,13 +11,13 @@ In this project background image and foreground image superimposed on background
 The dataset is given in 10 zip files (batch1_images.zip, batch2_images.zip ..., batch10_images.zip). Each zip contains the following
  folders:
 
-bg_jpg : Background jpg images
+bg_jpg : Background jpg images (160x160)
 
-fg_bg_jpg : Foreground image superimposed on background image
+fg_bg_jpg : Foreground image superimposed on background image with dimension:  (160x160)
 
-mask_black_jpg : Ground truth of Mask of foregorund image on black background
+mask_black_jpg : Ground truth of Mask of foregorund image on black background with dimension: (160x160)
 
-depth_fg_bg_jpg: Ground truth of depth image
+depth_fg_bg_jpg: Ground truth of depth image with dimension: (80x80)
 
 The complete dataset is available in google drive link:
 
