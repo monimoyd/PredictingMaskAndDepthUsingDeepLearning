@@ -89,9 +89,9 @@ Datal Loader performs loading of data from the images.
 
 
 
-The workflow for dataloader is explained in teh flowchart below:
+The workflow for dataloader is explained in the flowchart below:
 
-![Project Report](/doc_images/data_loader_flowchart.png)
+![Project Report](/doc_images/data_loader_workflow.png)
 
 The process involved:
 , 
