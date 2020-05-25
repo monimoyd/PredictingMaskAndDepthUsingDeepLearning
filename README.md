@@ -33,7 +33,6 @@ https://colab.research.google.com/drive/1xylqpDJOHght0IcGGblgmMTSK4OKtLoN?usp=sh
 
 Major Highlights:
 
-Major highlights: 
 -  Use fully API based implementation 
 -  Used UNet architecture with only 148K parameters 
 -  Used Image augmentation i. Gaussian Noise ii. ColorJitter
@@ -92,7 +91,7 @@ Datal Loader performs loading of data from the images.
 
 The workflow for dataloader is explained in teh flowchart below:
 
-![Project Report](/doc_images/data_loader_workflow.png)
+![Project Report](/doc_images/data_loader_flowchart.png)
 
 The process involved:
 , 
@@ -131,13 +130,13 @@ For the training images there are two augmentations used:
 - ColorJitter from torchvision with brightness:0.075, contrast:0.075, saturation:0.075, hue:0.075
 - Custom class GaussianNoise with mean 0, standard deviation: 0.05 with probability: 0.2. 
 
-Same Data augmentations are applied on input bg, fg_bg, mask, depth images
+Same Data augmentations are applied on input bg, fg_bg, mask, as well as ground truth mask and depth images
 
 ## iii. Model
 
 I have used UNet Model for this. UNet Model is suitable for segmentation works.
 
-Original Unet architecture is as below [Source: https://towardsdatascience.com/u-net-b229b32b4a71]
+Original UNet architecture is as below [Source: https://towardsdatascience.com/u-net-b229b32b4a71]
 
 ![Project Report](/doc_images/unet_architecture.png)
 
@@ -146,6 +145,7 @@ The bottleneck, and the expansion section. The contraction section is made of ma
 applies two 3X3 convolution layers followed by a 2X2 max pooling. The number of kernels or feature maps after each block doubles
  so that architecture can learn the complex structures effectively. The bottommost layer mediates between the contraction layer 
  and the expansion layer. It uses two 3X3 CNN layers followed by 2X2 up convolution layer.
+ 
 But the heart of this architecture lies in the expansion section. Similar to contraction layer, it also consists of several 
 expansion blocks. Each block passes the input to two 3X3 CNN layers followed by a 2X2 upsampling layer. Also after each block 
 number of feature maps used by convolutional layer get half to maintain symmetry. However, every time the input is also get appended 
@@ -155,7 +155,7 @@ by feature maps of the corresponding contraction layer. This action would ensure
 
 
 
-Original UNet Model has around 25 Million parameters, so reduced parameters:
+Original UNet Model has around 25 Million parameters, so to reduce parameters:
 
 - Used Depthwise Separable Convolution
 - Number of channels are also reduced
@@ -169,19 +169,28 @@ depth (80x80)
 
 There are two loss functions used:
 
-BCEWitLogitsLoss : This loss combines a `Sigmoid` layer and the Binary Cross Entropy Loss in one single class.
+### 1. BCEWitLogitsLoss : 
 
-- I have used this loss function for mask predictions as it requires pixel level comparison
+This loss combines a `Sigmoid` layer and the Binary Cross Entropy Loss in one single class.
 
-SSIM : The structural similarity (SSIM) index is a method for predicting the perceived quality of digital television and cinematic pictures, as well as other kinds
- of digital images and videos. SSIM is used for measuring the similarity between two images.
+I have used this loss function for mask predictions as it requires pixel level comparison
+
+### 2. SSIM : 
+
+The structural similarity (SSIM) index is a method for predicting the perceived quality of digital television and cinematic pictures,
+ as well as other kinds of digital images and videos. SSIM is used for measuring the similarity between two images.
  
- I have used SSIM as loss function for calculating loss between predicted and ground truth depth images
+ I have used SSIM as loss function for calculating loss between predicted and ground truth depth images.
  
  
  Total Loss I have used the formula:
  
  Total Loss = 2 * ( BCEWitLogitsLoss for mask images) + (1 - SSIM loss for depth images)
+ 
+ ( I have used 1-SSIM Loss as SSIM Loss is in the range 0 to 1 with 1 being perfect match)
+ 
+ SSIM is implemented in https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/utils/ssim_util.py. 
+ The code is taken from https://github.com/Po-Hsun-Su/pytorch-ssim
  
  
 ## v. Metric Used
@@ -189,12 +198,15 @@ SSIM : The structural similarity (SSIM) index is a method for predicting the per
 Loss : This calculates total loss value for ( predicted mask image with ground truth mask image) and (predicted
 depth image with ground truth depth image)
 
-IoU: IOU for predicted mask is calculated using jaccard similarity cofficient. Jaccard similarity coefficient, defined as the size of the intersection 
-divided by the size of the union of two label sets, is used to compare set of predicted labels for a sample to the corresponding set of
- labels in y_true 
+IoU: IOU for predicted mask is calculated using jaccard similarity cofficient. Jaccard similarity coefficient, defined as the
+ size of the intersection divided by the size of the union of two label sets, is used to compare set of predicted labels for a
+ sample to the corresponding set of labels in y_true 
 
 First for each pixel vlaue  predicted mask image and ground mask image a threshold is defined. If pixel value is more than threshold
-then it is considered 1 else zero. Next jaccard_score of sklearn.metrics is used to calculate IoU value
+then it is considered 1 else zero. Next jaccard_score of sklearn.metrics is used to calculate IoU value.
+
+The code for calculating IoU is:
+ https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/utils/iou_util.py
 
 
 ## v. Hyper parameters
@@ -244,7 +256,12 @@ For testing, best model from training is loaded and then evaluation is done on t
 
 # IV. Results
 
-A few results from Test are as below:
+All the results are available in Jupyter Notebook 
+https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/assignment15_final_api.ipynb
+
+(Training results are  in training cell output , and testing results are in testing cell output
+
+## Results from traing:
 
 
 ## i. 
