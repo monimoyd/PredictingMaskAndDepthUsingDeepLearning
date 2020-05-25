@@ -82,6 +82,12 @@ Outputs are:
 - 160x160 mask of foreground on black background
 - 80x80 predicted depth image
 
+The code for Traing is available in URL:
+
+ https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/utils/train_test_util.py
+ 
+ (Please look for train method)
+
 
 ## i. Data Loader
 
@@ -120,7 +126,9 @@ Records are populated as below
  filename is fg_bg_1_100_1_15.jpg, the  filename correspoding depth image will be 
  depth_1_100_1_15.jpg, which will be available in depth_fg_bg_jpg directory under the respective batch directory
  
+ The code for dataloader is available in URL:
  
+ https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/data_loaders/fg_bg_images_data_loader.py
   
 
 ## ii. Data Augmentation
@@ -131,6 +139,11 @@ For the training images there are two augmentations used:
 - Custom class GaussianNoise with mean 0, standard deviation: 0.05 with probability: 0.2. 
 
 Same Data augmentations are applied on input bg, fg_bg, mask, as well as ground truth mask and depth images
+
+
+The code for data augmentation is available in URL: 
+ https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/data_transformations/fg_bg_images_data_transformation.py
+
 
 ## iii. Model
 
@@ -164,6 +177,11 @@ After reduction total number of parameters is 748K, which is less than even 1 Mi
 
 The output of the model has two heads one for predicting mask of size (160x160) and another head is for predicting
 depth (80x80)
+
+The code for Model is available in URL:
+
+https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/models/unet_model_small.py
+
 
 ## iv. Loss Function
 
@@ -251,6 +269,12 @@ Outputs are:
 
 
 For testing, best model from training is loaded and then evaluation is done on the input images
+
+The code for Testing is available in URL:
+
+ https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/utils/train_test_util.py
+ 
+ (Please look for test method)
 
 
 
@@ -352,7 +376,6 @@ Mask IoU vlaue: 0.9422367689214051
 # V. Profiling:
 
 
-
 ## i. Tensorboard
 
 TensorBoard is a profiler and visualization tool, it is  used for the following purposes:
@@ -423,6 +446,9 @@ The following are some of the screenshots of cProfile:
 ![cprofile_plot_2](/cprofile_plots/cprofile_plot_2.png)
 
 
+
+
+
 ## Analysis:
 
 The train_test_utils.py line numbers 21, 24 and 29 consume lot of time. Line no 21 is related to train method, line number 24 and 29
@@ -460,7 +486,11 @@ I have instrumented the training code for GPU profiling based on article:
 Last few records depthwise_separable_conv, BatchNorm2d are using mem_cached value of  1000341504 which is too high, needs
 attentions
 
+The code for GPU profiling is available in URL:
 
+https://github.com/monimoyd/PredictingMaskAndDepthUsingDeepLearning/blob/master/utils/train_test_util.py
+
+(please look for methods _get_gpu_mem, _generate_mem_hook, _add_memory_hooks, log_mem)
 
  
 
