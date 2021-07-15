@@ -34,7 +34,7 @@ https://colab.research.google.com/drive/1xylqpDJOHght0IcGGblgmMTSK4OKtLoN?usp=sh
 Major Highlights:
 
 -  Use fully API based implementation 
--  Used UNet architecture with only 148K parameters 
+-  Used UNet architecture with only 748K parameters 
 -  Used Image augmentation i. Gaussian Noise ii. ColorJitter
 -  IoU value for predicted mask is close to 0.95, while depth images are very closer to ground truth 
 - Used various profiling tools tensorboard, cprofile, GPU profiler 
